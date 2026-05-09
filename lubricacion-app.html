@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SAMOA · App Técnicos Lubricación</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init('3pMIyzau-iTDemYzC');</script>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#1a56a0;--blue-dark:#0f3a72;--blue-light:#e8f1fb;--accent:#f5a623;--green:#00A86B;--green-light:#e6f7f2;--red:#E8003D;--red-light:#fff0f3;--orange:#e87000;--orange-light:#fff5e6;--purple:#6b21a8;--gray:#8a9ab0;--gray-light:#f4f7fb;--border:#d1daea;--text:#1a2540;--text-light:#5a6a82;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Barlow',sans-serif;background:#edf2f9;color:var(--text);min-height:100vh;overflow-x:hidden;}
+.screen{display:none;min-height:100vh;padding-bottom:30px;}
+.screen.active{display:block;}
+.login-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px;background:linear-gradient(160deg,var(--blue-dark) 0%,var(--blue) 60%,#2a7fd4 100%);}
+.login-logo{background:white;color:var(--blue);font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;padding:10px 20px;border-radius:10px;margin-bottom:6px;}
+.login-brand{color:rgba(255,255,255,0.8);font-size:14px;margin-bottom:6px;font-weight:600;}
+.login-sub{color:rgba(255,255,255,0.6);font-size:12px;margin-bottom:36px;text-align:center;}
+.login-card{background:white;border-radius:20px;padding:28px 24px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,0.3);}
+.login-card h2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;margin-bottom:4px;}
+.login-card p{font-size:13px;color:var(--gray);margin-bottom:18px;}
+.login-field{margin-bottom:14px;}
+.login-field label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--gray);display:block;margin-bottom:5px;}
+.login-field input,.login-field select{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-family:'Barlow',sans-serif;font-size:15px;color:var(--text);outline:none;background:var(--gray-light);}
+.mode-selector{display:flex;gap:8px;margin-bottom:16px;}
+.mode-btn{flex:1;padding:10px 6px;border-radius:10px;border:2px solid var(--border);background:white;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;cursor:pointer;text-align:center;color:var(--gray);}
+.mode-btn.active-pm{border-color:var(--blue);background:var(--blue-light);color:var(--blue);}
+.mode-btn.active-prev{border-color:var(--green);background:var(--green-light);color:var(--green);}
+.mode-btn.active-cor{border-color:var(--orange);background:var(--orange-light);color:var(--orange);}
+.topbar{background:var(--blue);color:white;position:sticky;top:0;z-index:200;box-shadow:0 3px 16px rgba(0,0,0,0.2);}
+.topbar-inner{display:flex;align-items:center;gap:10px;padding:11px 16px;}
+.tlogo{background:white;color:var(--blue);font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:13px;padding:4px 8px;border-radius:5px;flex-shrink:0;}
+.ttitle{flex:1;}
+.ttitle h1{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;line-height:1.1;}
+.ttitle p{font-size:10px;opacity:0.65;margin-top:1px;}
+.ticon-btn{background:rgba(255,255,255,0.15);border:none;color:white;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0;}
+.mode-badge{padding:6px 16px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;text-align:center;}
+.mode-badge.pm{background:var(--blue-dark);color:var(--accent);}
+.mode-badge.prev{background:#00694a;color:#a0ffd8;}
+.mode-badge.cor{background:#7a3800;color:#ffd0a0;}
+.prog-wrap{padding:8px 16px 10px;display:flex;align-items:center;gap:10px;}
+.prog-track{flex:1;height:5px;background:rgba(255,255,255,0.2);border-radius:10px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--accent);border-radius:10px;transition:width 0.4s;width:0%;}
+.prog-lbl{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--accent);white-space:nowrap;}
+.tabs{display:flex;overflow-x:auto;padding:0 16px;border-bottom:2px solid rgba(255,255,255,0.15);scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;padding:8px 12px;background:transparent;color:rgba(255,255,255,0.5);border:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;text-transform:uppercase;}
+.tab.active{color:white;border-bottom-color:var(--accent);}
+.content{padding:14px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.badge{background:white;border-radius:10px;padding:10px 6px;border:1.5px solid var(--border);text-align:center;}
+.badge-num{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:26px;line-height:1;}
+.badge-lbl{font-size:9px;color:var(--gray);font-weight:600;text-transform:uppercase;margin-top:2px;}
+.b-blue .badge-num{color:var(--blue);}.b-green .badge-num{color:var(--green);}.b-orange .badge-num{color:var(--orange);}.b-gray .badge-num{color:var(--gray);}
+.card{background:white;border-radius:14px;border:1.5px solid var(--border);margin-bottom:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,40,100,0.05);}
+.card-hdr{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--gray-light);border-bottom:1.5px solid var(--border);cursor:pointer;}
+.cicon{width:32px;height:32px;border-radius:7px;background:var(--blue);color:white;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cicon.orange{background:var(--orange);}.cicon.purple{background:var(--purple);}.cicon.red{background:var(--red);}.cicon.gray{background:#5a6a82;}.cicon.green{background:var(--green);}.cicon.dark{background:var(--blue-dark);}
+.ctitle{flex:1;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;color:var(--blue-dark);}
+.ccount{font-size:10px;color:var(--gray);font-weight:600;}
+.carrow{font-size:10px;color:var(--gray);transition:transform 0.3s;}
+.card.open .carrow{transform:rotate(180deg);}
+.card-body{display:none;}
+.card.open .card-body{display:block;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px;}
+.fgrid.one{grid-template-columns:1fr;}
+.ffield{display:flex;flex-direction:column;gap:3px;}
+.ffield label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--gray);}
+.ffield input,.ffield select,.ffield textarea{border:1.5px solid var(--border);border-radius:8px;padding:9px 10px;font-family:'Barlow',sans-serif;font-size:14px;color:var(--text);outline:none;background:var(--gray-light);width:100%;}
+.ffield textarea{min-height:75px;resize:vertical;}
+.item{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-bottom:1px solid #f0f4fa;cursor:pointer;}
+.item:last-child{border-bottom:none;}
+.item.checked{background:var(--green-light);}
+.item.na-item{opacity:0.5;background:#fafafa;}
+.icb{width:24px;height:24px;border:2px solid var(--border);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;font-size:13px;}
+.item.checked .icb{background:var(--green);border-color:var(--green);color:white;}
+.icode{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;color:var(--blue);flex-shrink:0;width:38px;padding-top:3px;}
+.itext{flex:1;font-size:13px;line-height:1.5;color:var(--text);}
+.item.checked .itext{color:var(--text-light);text-decoration:line-through;text-decoration-color:var(--green);}
+.ina{font-size:10px;font-weight:700;color:var(--gray);background:var(--border);border-radius:4px;padding:2px 6px;flex-shrink:0;margin-top:3px;}
+.photo-section{padding:14px;}
+.photo-category{margin-bottom:18px;}
+.photo-cat-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;color:var(--blue-dark);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.photo-thumb{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--gray-light);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.photo-thumb.has-photo{border-style:solid;}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;}
+.photo-thumb .del-btn{position:absolute;top:4px;right:4px;background:var(--red);color:white;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.add-photo-btn{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--gray-light);border:2px dashed var(--border);border-radius:10px;padding:12px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--gray);width:100%;margin-top:6px;}
+.sig-canvas-wrap{border:2px solid var(--border);border-radius:10px;overflow:hidden;background:white;position:relative;}
+canvas.sig-canvas{width:100%;height:160px;display:block;touch-action:none;}
+.sig-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:13px;pointer-events:none;font-style:italic;}
+.sig-actions{display:flex;gap:8px;margin-top:8px;}
+.sig-clear{flex:1;background:white;border:1.5px solid var(--border);border-radius:8px;padding:8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--gray);cursor:pointer;}
+.sig-done{flex:2;background:var(--green);border:none;border-radius:8px;padding:8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:white;cursor:pointer;}
+.sig-preview{width:100%;max-height:100px;object-fit:contain;border-radius:8px;border:1.5px solid var(--green);margin-top:8px;display:none;}
+.ibox{border-radius:8px;padding:10px 14px;font-size:12px;line-height:1.5;margin:10px 14px;}
+.ibox.blue{background:var(--blue-light);border:1.5px solid #bdd4f5;color:var(--blue-dark);}
+.ibox.orange{background:var(--orange-light);border:1.5px solid #ffd0a0;color:#7a3800;}
+.btn{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;padding:14px 20px;border-radius:10px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;}
+.btn-primary{background:var(--blue);color:white;}
+.btn-green{background:var(--green);color:white;}
+.btn-ghost{background:white;color:var(--blue);border:2px solid var(--blue);}
+.frow{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #f0f4fa;}
+.frow:last-child{border-bottom:none;}
+.frow-lbl{flex:1;font-size:13px;color:var(--text);line-height:1.4;}
+.frow-lbl strong{display:block;font-size:9px;font-weight:700;text-transform:uppercase;color:var(--gray);margin-bottom:2px;}
+.sub-hdr{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--gray);padding:7px 14px 4px;border-bottom:1px solid #f0f4fa;background:#fafbfd;}
+.search-wrap{padding:10px 14px;background:white;border-bottom:1.5px solid var(--border);}
+.search-wrap input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:'Barlow',sans-serif;font-size:14px;outline:none;background:var(--gray-light);}
+.report-card{background:white;border-radius:12px;border:1.5px solid var(--border);margin:10px 14px 0;padding:14px;cursor:pointer;}
+.rc-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.rc-badge{width:38px;height:38px;border-radius:8px;background:var(--blue);color:white;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.rc-badge.pm{background:var(--blue);}.rc-badge.prev{background:var(--green);}.rc-badge.cor{background:var(--orange);}
+.rc-info h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;}
+.rc-info p{font-size:11px;color:var(--gray);}
+.rc-pills{display:flex;gap:5px;flex-wrap:wrap;}
+.pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;}
+.pill.green{background:var(--green-light);color:var(--green);}.pill.orange{background:var(--orange-light);color:var(--orange);}.pill.blue{background:var(--blue-light);color:var(--blue);}
+.empty-state{text-align:center;padding:60px 20px;color:var(--gray);}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;display:none;align-items:flex-end;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:20px 20px 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:20px;}
+.modal h2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;margin-bottom:4px;}
+.msec{margin-bottom:14px;}
+.msec h3{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--blue);margin-bottom:6px;text-transform:uppercase;}
+.mrow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f4fa;font-size:13px;}
+.mrow:last-child{border-bottom:none;}
+.mrow span:first-child{color:var(--gray);}
+.mrow span:last-child{font-weight:600;text-align:right;max-width:55%;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a2540;color:white;padding:12px 20px;border-radius:10px;font-size:14px;font-family:'Barlow Condensed',sans-serif;font-weight:600;z-index:999;transition:transform 0.35s;white-space:nowrap;pointer-events:none;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div id="scr-login" class="screen active">
+  <div class="login-wrap">
+    <div class="login-logo">SAMOA</div>
+    <div class="login-brand">THP Group International</div>
+    <div class="login-sub">Sistema de visitas técnicas · Equipos de Lubricación</div>
+    <div class="login-card">
+      <h2>Iniciar sesión</h2>
+      <p>Selecciona tu nombre y tipo de visita</p>
+      <div class="login-field">
+        <label>Técnico</label>
+        <select id="login-tecnico">
+          <option value="">— Seleccionar —</option>
+          <option>Gustavo Rodríguez</option><option>Manuel Fernández</option>
+          <option>Edgardo González</option><option>Abel Cáceres</option>
+          <option>Bélgica Vergara</option><option>Otro</option>
+        </select>
+      </div>
+      <div class="login-field" id="login-otro-wrap" style="display:none">
+        <label>Tu nombre</label><input type="text" id="login-otro" placeholder="Escribe tu nombre">
+      </div>
+      <div class="login-field">
+        <label>Tipo de visita</label>
+        <div class="mode-selector">
+          <button class="mode-btn" id="btn-pm" onclick="selectMode('pm')">🔵 Puesta en Marcha</button>
+          <button class="mode-btn" id="btn-prev" onclick="selectMode('prev')">🟡 Preventivo</button>
+          <button class="mode-btn" id="btn-cor" onclick="selectMode('cor')">🔴 Correctivo</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="doLogin()" style="margin-top:8px">Entrar →</button>
+      <div style="text-align:center;margin-top:14px;">
+        <button onclick="goScreen('scr-history')" style="background:none;border:none;color:var(--gray);font-size:12px;cursor:pointer;font-family:'Barlow',sans-serif;">📋 Ver historial</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="scr-checklist" class="screen">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="tlogo">SAMOA</div>
+      <div class="ttitle"><h1 id="top-mode-title">NUEVA VISITA</h1><p id="top-tecnico">Técnico: —</p></div>
+      <button class="ticon-btn" onclick="goScreen('scr-history')">📋</button>
+      <button class="ticon-btn" onclick="goScreen('scr-login')">↩</button>
+    </div>
+    <div class="mode-badge pm" id="mode-badge">PUESTA EN MARCHA</div>
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+      <div class="prog-lbl" id="prog-lbl">0 / 0</div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('tp-checklist',this)">📋 Checklist</button>
+      <button class="tab" onclick="switchTab('tp-fluidos',this)">🛢️ Fluidos</button>
+      <button class="tab" onclick="switchTab('tp-nexu',this)">💻 NEXU</button>
+      <button class="tab" onclick="switchTab('tp-fotos',this)">📸 Fotos</button>
+      <button class="tab" onclick="switchTab('tp-firma',this)">✍️ Firma</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="card open" id="card-info">
+      <div class="card-hdr" onclick="toggleCard('card-info')">
+        <div class="cicon gray">ℹ</div><div class="ctitle">Datos de la Visita</div><div class="carrow">▼</div>
+      </div>
+      <div class="card-body">
+        <div class="fgrid">
+          <div class="ffield"><label>Cliente</label><input type="text" id="f-cliente" placeholder="Nombre cliente"></div>
+          <div class="ffield"><label>Población</label><input type="text" id="f-poblacion" placeholder="Ciudad"></div>
+          <div class="ffield"><label>Domicilio</label><input type="text" id="f-domicilio" placeholder="Dirección"></div>
+          <div class="ffield"><label>Fecha</label><input type="date" id="f-fecha"></div>
+          <div class="ffield"><label>Nº Orden / Proyecto</label><input type="text" id="f-orden" placeholder="OT-00123"></div>
+          <div class="ffield"><label>Nº Serie Equipo</label><input type="text" id="f-nserie" placeholder="SAMOA-001"></div>
+          <div class="ffield fgrid-span"><label>Modelo / Referencia</label><input type="text" id="f-modelo" placeholder="Ej. PM4 5:1 + RM-12 + NEXU"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tp-checklist" class="tab-panel active">
+      <div class="badges">
+        <div class="badge b-blue"><div class="badge-num" id="b-total">0</div><div class="badge-lbl">Total</div></div>
+        <div class="badge b-green"><div class="badge-num" id="b-ok">0</div><div class="badge-lbl">OK ✓</div></div>
+        <div class="badge b-orange"><div class="badge-num" id="b-pend">0</div><div class="badge-lbl">Pend.</div></div>
+        <div class="badge b-gray"><div class="badge-num" id="b-na">0</div><div class="badge-lbl">N/A</div></div>
+      </div>
+      <div id="checklist-container"></div>
+      <div class="card"><div class="card-hdr" style="cursor:default"><div class="cicon gray">📝</div><div class="ctitle">Notas Checklist</div></div>
+        <div class="card-body" style="display:block"><div style="padding:12px 14px"><textarea id="notas-cl" placeholder="Observaciones..." style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px;font-family:'Barlow',sans-serif;font-size:13px;outline:none;background:var(--gray-light);min-height:80px;resize:vertical;"></textarea></div></div>
+      </div>
+    </div>
+
+    <div id="tp-fluidos" class="tab-panel">
+      <div class="ibox blue">Registra los niveles y estado de cada fluido.</div>
+      <div class="card open" id="card-fluidos">
+        <div class="card-hdr" onclick="toggleCard('card-fluidos')"><div class="cicon dark">🛢️</div><div class="ctitle">Estado de Fluidos</div><div class="carrow">▼</div></div>
+        <div class="card-body">
+          <div class="sub-hdr">Aceite Motor / Lubricante</div>
+          <div class="frow"><div class="frow-lbl"><strong>Nivel depósito aceite</strong></div><select id="fl-aceite-niv" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Barlow',sans-serif;font-size:12px;width:130px;outline:none;background:var(--gray-light);"><option value="">—</option><option>✓ OK (75-100%)</option><option>⚠ Bajo (25-75%)</option><option>⛔ Crítico (&lt;25%)</option></select></div>
+          <div class="frow"><div class="frow-lbl"><strong>Tipo / Viscosidad</strong></div><input type="text" id="fl-aceite-tipo" placeholder="Ej. 10W-40" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Barlow',sans-serif;font-size:12px;width:130px;outline:none;background:var(--gray-light);"></div>
+          <div class="frow"><div class="frow-lbl"><strong>Se repuso aceite</strong></div><select id="fl-aceite-rep" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Barlow',sans-serif;font-size:12px;width:130px;outline:none;background:var(--gray-light);"><option value="">—</option><option>Sí</option><option>No</option></select></div>
+          <div class="sub-hdr">Grasa</div>
+          <div class="frow"><div class="frow-lbl"><strong>Nivel depósito grasa</strong></div><select id="fl-grasa-niv" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Barlow',sans-serif;font-size:12px;width:130px;outline:none;background:var(--gray-light);"><option value="">—</option><option>✓ OK</option><option>⚠ Bajo</option><option>⛔ Crítico</option></select></div>
+          <div class="sub-hdr">Refrigerante / Coolant</div>
+          <div class="frow"><div class="frow-lbl"><strong>Nivel refrigerante</strong></div><select id="fl-ref-niv" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Barlow',sans-serif;font-size:12px;width:130px;outline:none;background:var(--gray-light);"><option value="">—</option><option>✓ OK</option><option>⚠ Bajo</option><option>⛔ Crítico</option><option>No aplica</option></select></div>
+          <div class="sub-hdr">AdBlue / DEF</div>
+          <div class="frow"><div class="frow-lbl"><strong>Nivel AdBlue</strong></div><select id="fl-adblue-niv" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Barlow',sans-serif;font-size:12px;width:130px;outline:none;background:var(--gray-light);"><option value="">—</option><option>✓ OK</option><option>⚠ Bajo</option><option>⛔ Crítico</option><option>No aplica</option></select></div>
+          <div class="sub-hdr">Aceite Usado (Recuperador)</div>
+          <div class="frow"><div class="frow-lbl"><strong>Nivel aceite usado</strong></div><select id="fl-usado-niv" style="border:1.5px solid var(--border);border-radius:6px;padding:6px 8px;font-family:'Barlow',sans-serif;font-size:12px;width:130px;outline:none;background:var(--gray-light);"><option value="">—</option><option>✓ OK (&lt;75%)</option><option>⚠ Lleno (vaciar)</option><option>No aplica</option></select></div>
+        </div>
+      </div>
+      <div class="card"><div class="card-hdr" style="cursor:default"><div class="cicon orange">📝</div><div class="ctitle">Notas Fluidos</div></div>
+        <div class="card-body" style="display:block"><div style="padding:12px 14px"><textarea id="notas-fl" placeholder="Observaciones sobre fluidos..." style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px;font-family:'Barlow',sans-serif;font-size:13px;outline:none;background:var(--gray-light);min-height:80px;resize:vertical;"></textarea></div></div>
+      </div>
+    </div>
+
+    <div id="tp-nexu" class="tab-panel">
+      <div class="ibox blue">Sistema NEX·U·® SAMOA — Verificación de componentes.</div>
+      <div class="card open" id="card-nexu">
+        <div class="card-hdr" onclick="toggleCard('card-nexu')"><div class="cicon dark">💻</div><div class="ctitle">Sistema NEXU</div><div class="ccount" id="cnt-nexu">0 verificados</div><div class="carrow">▼</div></div>
+        <div class="card-body"><div id="nexu-list"></div></div>
+      </div>
+      <div class="card"><div class="card-hdr" style="cursor:default"><div class="cicon dark">📝</div><div class="ctitle">Notas NEXU</div></div>
+        <div class="card-body" style="display:block"><div style="padding:12px 14px"><textarea id="notas-nexu" placeholder="Configuración, errores, versiones..." style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px;font-family:'Barlow',sans-serif;font-size:13px;outline:none;background:var(--gray-light);min-height:80px;resize:vertical;"></textarea></div></div>
+      </div>
+    </div>
+
+    <div id="tp-fotos" class="tab-panel">
+      <div class="ibox blue">Toca + para añadir fotos desde la cámara o galería.</div>
+      <div class="card open">
+        <div class="card-hdr" style="cursor:default"><div class="cicon green">📸</div><div class="ctitle">Fotos de la Visita</div><div class="ccount" id="cnt-fotos">0 fotos</div></div>
+        <div class="card-body" style="display:block">
+          <div class="photo-section">
+            <div class="photo-category"><div class="photo-cat-title"><span>⚠️</span> Problema / Falla</div><div class="photo-grid" id="grid-problema"></div><button class="add-photo-btn" onclick="addPhoto('problema')">+ Añadir foto</button></div>
+            <div class="photo-category"><div class="photo-cat-title"><span>🔄</span> Antes de la intervención</div><div class="photo-grid" id="grid-antes"></div><button class="add-photo-btn" onclick="addPhoto('antes')">+ Añadir foto</button></div>
+            <div class="photo-category"><div class="photo-cat-title"><span>✅</span> Después de la intervención</div><div class="photo-grid" id="grid-despues"></div><button class="add-photo-btn" onclick="addPhoto('despues')">+ Añadir foto</button></div>
+            <div class="photo-category"><div class="photo-cat-title"><span>🏭</span> Instalación completa</div><div class="photo-grid" id="grid-instalacion"></div><button class="add-photo-btn" onclick="addPhoto('instalacion')">+ Añadir foto</button></div>
+            <div class="photo-category"><div class="photo-cat-title"><span>🛢️</span> Niveles de fluidos</div><div class="photo-grid" id="grid-fluidos"></div><button class="add-photo-btn" onclick="addPhoto('fluidos')">+ Añadir foto</button></div>
+            <div class="photo-category"><div class="photo-cat-title"><span>💻</span> Pantalla NEXU / U·track</div><div class="photo-grid" id="grid-nexu-foto"></div><button class="add-photo-btn" onclick="addPhoto('nexu-foto')">+ Añadir foto</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tp-firma" class="tab-panel">
+      <div class="ibox blue">El cliente firma directamente en la pantalla.</div>
+      <div class="card open">
+        <div class="card-hdr" style="cursor:default"><div class="cicon gray">✍️</div><div class="ctitle">Firma del Cliente</div></div>
+        <div class="card-body" style="display:block">
+          <div style="padding:14px">
+            <div class="ffield" style="margin-bottom:12px"><label>Nombre del cliente / responsable</label><input type="text" id="f-nombre-cliente" placeholder="Nombre completo"></div>
+            <div class="ffield" style="margin-bottom:12px"><label>Email del cliente (opcional)</label><input type="email" id="f-email-cliente" placeholder="cliente@empresa.com"></div>
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--gray);margin-bottom:6px;">Firma</div>
+            <div class="sig-canvas-wrap"><canvas id="sig-canvas" class="sig-canvas"></canvas><div class="sig-placeholder" id="sig-placeholder">Dibuja la firma aquí</div></div>
+            <div class="sig-actions"><button class="sig-clear" onclick="clearSignature()">🗑 Borrar</button><button class="sig-done" onclick="saveSignature()">✓ Confirmar firma</button></div>
+            <img id="sig-preview" class="sig-preview" alt="Firma">
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-hdr" style="cursor:default"><div class="cicon gray">📝</div><div class="ctitle">Observaciones del cliente</div></div>
+        <div class="card-body" style="display:block"><div style="padding:12px 14px"><textarea id="obs-cliente" placeholder="Comentarios del cliente..." style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px;font-family:'Barlow',sans-serif;font-size:13px;outline:none;background:var(--gray-light);min-height:80px;resize:vertical;"></textarea></div></div>
+      </div>
+      <div style="margin-top:16px">
+        <button class="btn btn-green" onclick="guardarVisita()" style="margin-bottom:10px">💾 Guardar Visita Completa</button>
+        <button class="btn btn-primary" onclick="imprimirReporte()" style="margin-bottom:10px;background:#6b21a8">🖨️ Imprimir Reporte</button>
+        <button class="btn btn-ghost" onclick="resetVisita()">↺ Nueva visita</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="scr-history" class="screen">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <button class="ticon-btn" onclick="goBack()">←</button>
+      <div class="ttitle"><h1>HISTORIAL DE VISITAS</h1><p id="hist-subtitle">Todas las visitas</p></div>
+      <button class="ticon-btn" onclick="goScreen('scr-checklist')">＋</button>
+    </div>
+  </div>
+  <div class="search-wrap"><input type="text" id="search-input" placeholder="🔍 Buscar por cliente, orden, técnico..." oninput="renderHistory()"></div>
+  <div id="history-list" style="padding-bottom:20px"></div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal"><h2 id="modal-title"></h2><p style="font-size:12px;color:var(--gray);margin-bottom:16px" id="modal-sub"></p><div id="modal-body"></div><button class="btn btn-ghost" style="margin-top:16px" onclick="closeModal()">Cerrar</button></div>
+</div>
+<div class="toast" id="toast"></div>
+<input type="file" id="photo-input" accept="image/*" capture="environment" style="display:none" multiple onchange="handlePhotoUpload(event)">
+
+<script>
+const SECTIONS=[
+  {l:'A',t:'Comprobaciones Previas',items:[{c:'A.1',t:'Verificar EPI antes de iniciar los trabajos.'},{c:'A.2',t:'Comprobar presión de aire en la acometida: mínimo 6 bar para bombas neumáticas.'},{c:'A.3',t:'Verificar que la válvula general de aire está cerrada antes de realizar conexiones.'},{c:'A.4',t:'Comprobar que los depósitos de fluidos están cerrados y etiquetados correctamente.'},{c:'A.5',t:'Verificar que el espacio de trabajo está limpio y libre de derrames.'},{c:'A.6',t:'Comprobar plano de instalación y confirmar posición de equipos.'}]},
+  {l:'B',t:'Pórticos, Bases y Estructuras',items:[{c:'B.1',t:'Verificar que el pórtico/estructura está correctamente anclado al suelo o pared.'},{c:'B.2',t:'Comprobar nivelación del pórtico con nivel de burbuja (tolerancia: 2mm/m).'},{c:'B.3',t:'Verificar que la estructura no presenta deformaciones ni corrosión.'},{c:'B.4',t:'Comprobar que las bases de las bombas están correctamente fijadas y niveladas.'},{c:'B.5',t:'Verificar que los porta-pistolas están correctamente montados.'},{c:'B.6',t:'Comprobar que los soportes de los enrolladores están anclados y soportan el peso.'},{c:'B.7',t:'Verificar pintura o tratamiento anticorrosión de estructuras metálicas.'}]},
+  {l:'C',t:'Enrolladores de Manguera',items:[{c:'C.1',t:'CARRETE: Verificar que gira libremente sin rozamientos ni bloqueos.'},{c:'C.2',t:'CARRETE: Comprobar que no presenta deformaciones, golpes ni fisuras.'},{c:'C.3',t:'MUELLE/RESORTE: Verificar tensión correcta — la manguera debe recogerse automáticamente.'},{c:'C.4',t:'MUELLE/RESORTE: Comprobar que el resorte no está roto ni fatigado.'},{c:'C.5',t:'TRINQUETE: Verificar que bloquea correctamente la manguera en las posiciones deseadas.'},{c:'C.6',t:'TRINQUETE: Comprobar que se desbloquea correctamente al tirar de la manguera.'},{c:'C.7',t:'RODAMIENTOS: Verificar que giran sin ruidos anómalos ni juego excesivo.'},{c:'C.8',t:'RÓTULA: Comprobar que la rótula de entrada permite la rotación libre sin fugas.'},{c:'C.9',t:'BRAZOS: Verificar posición y fijación de los brazos orientables.'},{c:'C.10',t:'GUÍA RODILLOS: Comprobar que los rodillos de la guía de salida están en buen estado.'},{c:'C.11',t:'MANGUERA: Verificar estado — sin cortes, aplastamientos ni abrasiones.'},{c:'C.12',t:'MANGUERA: Comprobar que es del tipo correcto para el fluido.'},{c:'C.13',t:'MANGUERA ACOMETIDA: Verificar conexión apretada y sin fugas.'},{c:'C.14',t:'CONEXIONES/RACORES: Comprobar todos los racores — sin fugas al presurizar.'},{c:'C.15',t:'PISTOLA/ACCESORIO: Verificar que está correctamente conectado y funciona.'},{c:'C.16',t:'PRUEBA FUNCIONAL: Realizar prueba completa de extensión y retracción bajo presión.'},{c:'C.17',t:'ETIQUETADO: Verificar que está correctamente etiquetado con el tipo de fluido.'}]},
+  {l:'D',t:'Bomba Neumática de Pistón',items:[{c:'D.1',t:'CUERPO: Verificar estado exterior — sin grietas ni corrosión.'},{c:'D.2',t:'PISTÓN: Comprobar que sube y baja libremente sin bloqueos.'},{c:'D.3',t:'VÁLVULAS: Verificar correcto funcionamiento — no debe haber retorno de fluido.'},{c:'D.4',t:'SELLOS/JUNTAS: Comprobar que no hay fugas por el vástago ni por el cuerpo.'},{c:'D.5',t:'CONEXIÓN AIRE: Verificar sin fugas, racor en buen estado.'},{c:'D.6',t:'CONEXIÓN FLUIDO: Comprobar sin fugas, racor correcto para el diámetro.'},{c:'D.7',t:'RELACIÓN DE PRESIÓN: Verificar relación (ej. 5:1, 10:1, 30:1) según instalación.'},{c:'D.8',t:'CEBADO: Comprobar que la bomba se ceba correctamente al inicio.'},{c:'D.9',t:'BASE DE FIJACIÓN: Verificar correctamente fijada.'},{c:'D.10',t:'FILTRO DE ENTRADA: Comprobar que está instalado y en buen estado.'},{c:'D.11',t:'REGULACIÓN: Verificar presión de salida con manómetro según especificación.'},{c:'D.12',t:'PRUEBA FUNCIONAL: Flujo continuo, sin pulsaciones excesivas ni fugas.'}]},
+  {l:'E',t:'Bomba de Membrana / Diafragma',items:[{c:'E.1',t:'MEMBRANA: Verificar estado — sin roturas, perforaciones ni endurecimiento.'},{c:'E.2',t:'CUERPO: Comprobar estado — sin grietas, pernos apretados.'},{c:'E.3',t:'VÁLVULAS DE BOLA: Verificar que sellan correctamente.'},{c:'E.4',t:'ASIENTOS: Comprobar estado — sin desgaste ni residuos.'},{c:'E.5',t:'CONEXIÓN AIRE: Sin fugas, presión correcta (máx. 8 bar).'},{c:'E.6',t:'CONEXIÓN FLUIDO: Sin fugas en entrada y salida.'},{c:'E.7',t:'AMORTIGUADOR: Verificar que está instalado y funciona correctamente.'},{c:'E.8',t:'COMPATIBILIDAD: Confirmar que el material es compatible con el fluido.'},{c:'E.9',t:'PRUEBA FUNCIONAL: Flujo correcto, sin fugas por membrana ni cuerpo.'}]},
+  {l:'F',t:'Pistolas de Suministro',items:[{c:'F.1',t:'CUERPO: Sin grietas ni deformaciones.'},{c:'F.2',t:'GATILLO: Abre y cierra correctamente con retorno automático.'},{c:'F.3',t:'VÁLVULA: Sella completamente al soltar el gatillo — sin goteo.'},{c:'F.4',t:'BOQUILLA: Sin obstrucciones ni erosión.'},{c:'F.5',t:'CONEXIÓN MANGUERA: Apretada y sin fugas.'},{c:'F.6',t:'CONTADOR (si aplica): Muestra correctamente el caudal dispensado.'},{c:'F.7',t:'CONTADOR — CERO: Se puede resetear a cero correctamente.'},{c:'F.8',t:'CONTADOR — CALIBRACIÓN: Verificar con recipiente graduado (tolerancia ±1%).'},{c:'F.9',t:'CONTADOR — BATERÍA: Comprobar estado de la batería o conexión eléctrica.'},{c:'F.10',t:'PRUEBA FUNCIONAL: Caudal correcto, sin fugas.'}]},
+  {l:'G',t:'Recuperador de Aceite Usado',items:[{c:'G.1',t:'DEPÓSITO: Sin fugas, nivel actual registrado.'},{c:'G.2',t:'TAPA/CIERRE: Cierra herméticamente.'},{c:'G.3',t:'BOMBA: Funciona correctamente.'},{c:'G.4',t:'MANGUERA DE ASPIRACIÓN: Sin aplastamientos ni grietas.'},{c:'G.5',t:'FILTRO: Limpio y en buen estado.'},{c:'G.6',t:'CONEXIÓN AIRE: Sin fugas.'},{c:'G.7',t:'NIVEL MÁXIMO: No supera el 80% — vaciar si es necesario.'},{c:'G.8',t:'PRUEBA FUNCIONAL: Extrae aceite correctamente sin fugas.'}]},
+  {l:'H',t:'Engrasadoras',items:[{c:'H.1',t:'DEPÓSITO DE GRASA: Nivel y estado correcto, sin contaminación.'},{c:'H.2',t:'AGITADOR: Funciona correctamente.'},{c:'H.3',t:'BOMBA: Presión de salida correcta.'},{c:'H.4',t:'CONEXIÓN AIRE: Presión correcta, sin fugas.'},{c:'H.5',t:'MANGUERA: Estado correcto.'},{c:'H.6',t:'PISTOLA DE ENGRASE: Funciona correctamente.'},{c:'H.7',t:'BOQUILLA HIDRÁULICA: Acopla correctamente.'},{c:'H.8',t:'PRUEBA FUNCIONAL: Presión y caudal de grasa correctos.'}]},
+  {l:'I',t:'Tuberías, Llaves de Paso y Unidades RF/RFL',items:[{c:'I.1',t:'TUBERÍA 1/2": Sin aplastamientos, corrosión ni fugas.'},{c:'I.2',t:'TUBERÍA 3/4": Sin aplastamientos, corrosión ni fugas.'},{c:'I.3',t:'TUBERÍA 1": Sin aplastamientos, corrosión ni fugas.'},{c:'I.4',t:'CODOS: Sin fugas, apretados, radio de curvatura correcto.'},{c:'I.5',t:'TÉS (T): Sin fugas, correctamente orientadas.'},{c:'I.6',t:'UNIONES: Apretadas con llave, teflón o sellante aplicado correctamente.'},{c:'I.7',t:'LLAVES DE PASO: Abren y cierran completamente sin esfuerzo excesivo.'},{c:'I.8',t:'LLAVES DE PASO: Sin fugas en posición abierta ni cerrada.'},{c:'I.9',t:'LLAVES DE PASO: Correctamente identificadas/etiquetadas.'},{c:'I.10',t:'UNIDAD RF (Regulador-Filtro): Presión de entrada/salida verificada. Condensados drenados.'},{c:'I.11',t:'UNIDAD RF: Elemento filtrante limpio y sin saturación.'},{c:'I.12',t:'UNIDAD RF: Sin fugas en conexiones.'},{c:'I.13',t:'UNIDAD RFL (Regulador-Filtro-Lubricador): Presión verificada. Condensados drenados.'},{c:'I.14',t:'UNIDAD RFL: Nivel de aceite en lubricador correcto.'},{c:'I.15',t:'UNIDAD RFL: Caudal de gota del lubricador ajustado (aprox. 1 gota/10 ciclos).'},{c:'I.16',t:'UNIDAD RFL: Sin fugas en conexiones.'},{c:'I.17',t:'PRUEBA ESTANQUEIDAD: Presurizar y verificar que no hay fugas en ningún punto.'}]},
+  {l:'J',t:'Verificación Final y Prueba General',items:[{c:'J.1',t:'Todos los equipos están etiquetados con el tipo de fluido y sentido de flujo.'},{c:'J.2',t:'No quedan herramientas ni materiales dentro de los equipos.'},{c:'J.3',t:'Todos los puntos de servicio son accesibles de forma segura.'},{c:'J.4',t:'Prueba general con fluidos reales — verificar caudal, presión y ausencia de fugas.'},{c:'J.5',t:'Los contadores marcan correctamente y se pueden resetear.'},{c:'J.6',t:'El sistema NEXU registra correctamente las transacciones de la prueba.'},{c:'J.7',t:'Limpieza de la zona de trabajo — recoger materiales y limpiar derrames.'},{c:'J.8',t:'Entregar documentación al responsable — explicar funcionamiento y mantenimiento.'},{c:'J.9',t:'Realizar varios ciclos en presencia del encargado de la instalación.'}]},
+];
+
+const NEXU_ITEMS=[
+  {c:'N.1',t:'U·NET — Correctamente montada y conectada a la red LAN.'},
+  {c:'N.2',t:'U·NET — Alimentación eléctrica correcta — LED de estado OK.'},
+  {c:'N.3',t:'U·NET — Software U·track instalado y accesible desde cualquier dispositivo.'},
+  {c:'N.4',t:'U·NET — Configuración de red correcta (IP, máscara, puerta de enlace).'},
+  {c:'N.5',t:'U·TRACK — Acceso al dashboard correcto — muestra inventario en tiempo real.'},
+  {c:'N.6',t:'U·TRACK — Todos los depósitos configurados (nombre, capacidad, fluido).'},
+  {c:'N.7',t:'U·TRACK — Informes de consumo generados correctamente.'},
+  {c:'N.8',t:'U·TRACK — Usuarios/operarios dados de alta con acceso correcto.'},
+  {c:'N.9',t:'U·METER — Correctamente instalado en la línea de fluido.'},
+  {c:'N.10',t:'U·METER — Calibración verificada con recipiente graduado (±1%).'},
+  {c:'N.11',t:'U·METER — Comunicación con U·net verificada.'},
+  {c:'N.12',t:'U·VALVE — Abre y cierra correctamente cuando se autoriza/deniega acceso.'},
+  {c:'N.13',t:'U·VALVE — Corta el flujo completamente al cerrar — sin goteo.'},
+  {c:'N.14',t:'U·VALVE — Comunicación con U·net verificada.'},
+  {c:'N.15',t:'U·TANK — Monitoriza correctamente el nivel del depósito en tiempo real.'},
+  {c:'N.16',t:'U·TANK — Alarmas de nivel mínimo y máximo configuradas.'},
+  {c:'N.17',t:'U·DAT — Pantalla y teclado funcionan correctamente.'},
+  {c:'N.18',t:'U·DAT — Operario puede acceder con PIN o tarjeta RFID.'},
+  {c:'N.19',t:'U·DAT — Conectado correctamente (CAN BUS o Wi-Fi) y aparece en el sistema.'},
+  {c:'N.20',t:'CABLEADO — Correctamente tendido, fijado y protegido.'},
+  {c:'N.21',t:'CABLEADO — Conectores CAN BUS correctamente terminados.'},
+  {c:'N.22',t:'CONECTORES — En buen estado, bien asentados, sin corrosión.'},
+  {c:'N.23',t:'PRUEBA COMPLETA — Acceso con PIN → selección fluido → dispensado → registro en U·track.'},
+];
+
+let currentTecnico='',currentMode='',checkState={},nexuState={},photos={problema:[],antes:[],despues:[],instalacion:[],fluidos:[],'nexu-foto':[]},signatureData='',currentPhotoCategory='',visits=JSON.parse(localStorage.getItem('samoa_lub_visits')||'[]');
+
+window.addEventListener('load',()=>{
+  document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0];
+  buildChecklist();buildNexuList();initSignature();renderHistory();
+  if(!localStorage.getItem('samoa_lub_sheets_url')) localStorage.setItem('samoa_lub_sheets_url','https://script.google.com/macros/s/AKfycbxu-S3PhSkf8N824YkIJK8NHDnGNUw4yljWxWMXaoK78rYT46AGQZb1R1H_Sd-Fy0J_ig/exec');
+});
+
+document.getElementById('login-tecnico').addEventListener('change',function(){document.getElementById('login-otro-wrap').style.display=this.value==='Otro'?'block':'none';});
+function selectMode(m){currentMode=m;document.querySelectorAll('.mode-btn').forEach(b=>{b.className='mode-btn';});document.getElementById('btn-'+m).classList.add('active-'+m);}
+function doLogin(){
+  const sel=document.getElementById('login-tecnico').value;
+  const otro=document.getElementById('login-otro').value.trim();
+  currentTecnico=sel==='Otro'?otro:sel;
+  if(!currentTecnico){showToast('Selecciona tu nombre');return;}
+  if(!currentMode){showToast('Selecciona el tipo de visita');return;}
+  const mL={pm:'🔵 PUESTA EN MARCHA',prev:'🟡 MANTENIMIENTO PREVENTIVO',cor:'🔴 MANTENIMIENTO CORRECTIVO'};
+  const mT={pm:'PUESTA EN MARCHA',prev:'PREVENTIVO',cor:'CORRECTIVO'};
+  document.getElementById('top-tecnico').textContent='Técnico: '+currentTecnico;
+  document.getElementById('mode-badge').textContent=mL[currentMode];
+  document.getElementById('mode-badge').className='mode-badge '+currentMode;
+  document.getElementById('top-mode-title').textContent=mT[currentMode];
+  goScreen('scr-checklist');
+}
+
+let screenHistory=['scr-login'];
+function goScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');if(screenHistory[screenHistory.length-1]!==id)screenHistory.push(id);if(id==='scr-history')renderHistory();window.scrollTo(0,0);}
+function goBack(){screenHistory.pop();const prev=screenHistory[screenHistory.length-1]||'scr-login';document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(prev).classList.add('active');window.scrollTo(0,0);}
+
+function buildChecklist(){
+  const c=document.getElementById('checklist-container');
+  SECTIONS.forEach((sec,si)=>{
+    const card=document.createElement('div');card.className='card';card.id='crd-'+si;
+    const hdr=document.createElement('div');hdr.className='card-hdr';
+    hdr.innerHTML=`<div class="cicon">${sec.l}</div><div class="ctitle">${sec.t}</div><div class="ccount" id="cc-${si}">0/${sec.items.length}</div><div class="carrow">▼</div>`;
+    hdr.addEventListener('click',()=>card.classList.toggle('open'));
+    const body=document.createElement('div');body.className='card-body';
+    sec.items.forEach((item,ii)=>{
+      const key=`${si}_${ii}`;checkState[key]='pending';
+      const row=document.createElement('div');row.className='item';
+      const cb=document.createElement('div');cb.className='icb';
+      const code=document.createElement('div');code.className='icode';code.textContent=item.c;
+      const txt=document.createElement('div');txt.className='itext';txt.textContent=item.t;
+      const na=document.createElement('div');na.className='ina';na.textContent='N/A';
+      row.addEventListener('click',e=>{if(e.target===na)return;if(checkState[key]==='na')return;checkState[key]=checkState[key]==='done'?'pending':'done';row.classList.toggle('checked',checkState[key]==='done');cb.innerHTML=checkState[key]==='done'?'✓':'';updateStats();});
+      na.addEventListener('click',e=>{e.stopPropagation();if(checkState[key]==='na'){checkState[key]='pending';row.classList.remove('na-item','checked');cb.innerHTML='';na.textContent='N/A';}else{checkState[key]='na';row.classList.remove('checked');row.classList.add('na-item');cb.innerHTML='—';na.textContent='↩';}updateStats();});
+      row.append(cb,code,txt,na);body.appendChild(row);
+    });
+    card.append(hdr,body);c.appendChild(card);if(si===0)card.classList.add('open');
+  });updateStats();
+}
+
+function buildNexuList(){
+  const list=document.getElementById('nexu-list');
+  NEXU_ITEMS.forEach((item,i)=>{
+    nexuState[i]='pending';
+    const row=document.createElement('div');row.className='item';
+    const cb=document.createElement('div');cb.className='icb';
+    const code=document.createElement('div');code.className='icode';code.textContent=item.c;
+    const txt=document.createElement('div');txt.className='itext';txt.textContent=item.t;
+    const na=document.createElement('div');na.className='ina';na.textContent='N/A';
+    row.addEventListener('click',e=>{if(e.target===na)return;if(nexuState[i]==='na')return;nexuState[i]=nexuState[i]==='done'?'pending':'done';row.classList.toggle('checked',nexuState[i]==='done');cb.innerHTML=nexuState[i]==='done'?'✓':'';updateNexuCount();});
+    na.addEventListener('click',e=>{e.stopPropagation();if(nexuState[i]==='na'){nexuState[i]='pending';row.classList.remove('na-item','checked');cb.innerHTML='';na.textContent='N/A';}else{nexuState[i]='na';row.classList.remove('checked');row.classList.add('na-item');cb.innerHTML='—';na.textContent='↩';}updateNexuCount();});
+    row.append(cb,code,txt,na);list.appendChild(row);
+  });updateNexuCount();
+}
+
+function updateStats(){
+  let total=0,done=0,naC=0;
+  SECTIONS.forEach((sec,si)=>{let sd=0;sec.items.forEach((_,ii)=>{const k=`${si}_${ii}`;total++;if(checkState[k]==='done'){done++;sd++;}if(checkState[k]==='na'){naC++;sd++;}});const el=document.getElementById('cc-'+si);if(el)el.textContent=`${sd}/${sec.items.length}`;});
+  const active=total-naC,pct=active>0?Math.round((done/active)*100):0;
+  document.getElementById('prog-fill').style.width=pct+'%';document.getElementById('prog-lbl').textContent=`${done}/${active} (${pct}%)`;
+  document.getElementById('b-total').textContent=total;document.getElementById('b-ok').textContent=done;document.getElementById('b-pend').textContent=active-done;document.getElementById('b-na').textContent=naC;
+}
+function updateNexuCount(){const done=Object.values(nexuState).filter(v=>v==='done').length;document.getElementById('cnt-nexu').textContent=`${done}/${NEXU_ITEMS.length} verificados`;}
+function switchTab(id,btn){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');btn.classList.add('active');}
+function toggleCard(id){document.getElementById(id).classList.toggle('open');}
+
+function addPhoto(cat){currentPhotoCategory=cat;document.getElementById('photo-input').value='';document.getElementById('photo-input').click();}
+function handlePhotoUpload(e){Array.from(e.target.files).forEach(file=>{const r=new FileReader();r.onload=ev=>{photos[currentPhotoCategory].push({src:ev.target.result,caption:'',id:Date.now()+Math.random()});renderPhotoGrid(currentPhotoCategory);updatePhotoCount();};r.readAsDataURL(file);});}
+function renderPhotoGrid(cat){const grid=document.getElementById('grid-'+cat);if(!grid)return;grid.innerHTML='';photos[cat].forEach((p,i)=>{const wrap=document.createElement('div');wrap.style.cssText='display:flex;flex-direction:column;gap:4px;';const thumb=document.createElement('div');thumb.className='photo-thumb has-photo';const img=document.createElement('img');img.src=p.src;const del=document.createElement('button');del.className='del-btn';del.textContent='×';del.onclick=ev=>{ev.stopPropagation();photos[cat].splice(i,1);renderPhotoGrid(cat);updatePhotoCount();};thumb.append(img,del);const capDiv=document.createElement('div');const capInput=document.createElement('input');capInput.type='text';capInput.placeholder='Descripción...';capInput.value=p.caption;capInput.style.cssText='width:100%;border:1.5px solid var(--border);border-radius:6px;padding:5px 8px;font-size:11px;font-family:Barlow,sans-serif;color:var(--text);outline:none;background:var(--gray-light);margin-top:4px;';capInput.oninput=()=>{photos[cat][i].caption=capInput.value;};capDiv.appendChild(capInput);wrap.append(thumb,capDiv);grid.appendChild(wrap);});}
+function updatePhotoCount(){const total=Object.values(photos).reduce((a,b)=>a+b.length,0);document.getElementById('cnt-fotos').textContent=total+' fotos';}
+
+function initSignature(){const canvas=document.getElementById('sig-canvas');const ctx=canvas.getContext('2d');let drawing=false;function resize(){canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;ctx.strokeStyle='#1a2540';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';}resize();window.addEventListener('resize',resize);function getPos(e){const r=canvas.getBoundingClientRect();const src=e.touches?e.touches[0]:e;return{x:(src.clientX-r.left)*(canvas.width/r.width),y:(src.clientY-r.top)*(canvas.height/r.height)};}
+canvas.addEventListener('mousedown',e=>{drawing=true;const p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);});canvas.addEventListener('mousemove',e=>{if(!drawing)return;const p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();document.getElementById('sig-placeholder').style.display='none';});canvas.addEventListener('mouseup',()=>drawing=false);canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);},{passive:false});canvas.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();document.getElementById('sig-placeholder').style.display='none';},{passive:false});canvas.addEventListener('touchend',()=>drawing=false);}
+function clearSignature(){const canvas=document.getElementById('sig-canvas');canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);document.getElementById('sig-placeholder').style.display='flex';document.getElementById('sig-preview').style.display='none';signatureData='';}
+function saveSignature(){const canvas=document.getElementById('sig-canvas');const blank=document.createElement('canvas');blank.width=canvas.width;blank.height=canvas.height;if(canvas.toDataURL()===blank.toDataURL()){showToast('⚠️ Dibuja la firma primero');return;}signatureData=canvas.toDataURL('image/png');document.getElementById('sig-preview').src=signatureData;document.getElementById('sig-preview').style.display='block';document.getElementById('sig-placeholder').style.display='none';showToast('✅ ¡Firma confirmada!');}
+
+function guardarVisita(){
+  const cliente=document.getElementById('f-cliente').value.trim();const orden=document.getElementById('f-orden').value.trim();
+  if(!cliente&&!orden){showToast('Añade el cliente o número de orden');return;}
+  const total=Object.keys(checkState).length,done=Object.values(checkState).filter(v=>v==='done').length,naC=Object.values(checkState).filter(v=>v==='na').length;
+  const pendientes=[];SECTIONS.forEach((sec,si)=>sec.items.forEach((item,ii)=>{if(checkState[`${si}_${ii}`]==='pending')pendientes.push(`[${item.c}] ${item.t}`);}));
+  const nexuDone=Object.values(nexuState).filter(v=>v==='done').length;
+  const v=id=>document.getElementById(id).value||'—';
+  const visit={id:Date.now(),modo:currentMode,fecha:v('f-fecha'),tecnico:currentTecnico,cliente:v('f-cliente'),poblacion:v('f-poblacion'),domicilio:v('f-domicilio'),orden:v('f-orden'),nserie:v('f-nserie'),modelo:v('f-modelo'),totalItems:total,verificados:done,naItems:naC,pendientes,nexuVerificados:nexuDone,nexuTotal:NEXU_ITEMS.length,fluidos:{aceiteNiv:v('fl-aceite-niv'),aceiteTipo:v('fl-aceite-tipo'),aceiteRep:v('fl-aceite-rep'),grasaNiv:v('fl-grasa-niv'),refNiv:v('fl-ref-niv'),adblueNiv:v('fl-adblue-niv'),usadoNiv:v('fl-usado-niv')},notas:[v('notas-cl'),v('notas-fl'),v('notas-nexu')].filter(n=>n&&n!=='—').join(' / '),fotosCounts:Object.fromEntries(Object.entries(photos).map(([k,arr])=>[k,arr.length])),fotosData:photos,nombreCliente:v('f-nombre-cliente'),emailCliente:v('f-email-cliente'),firma:signatureData,obsCliente:v('obs-cliente')};
+  visits.unshift(visit);
+  try{localStorage.setItem('samoa_lub_visits',JSON.stringify(visits));}catch(e){const slim=visits.map(v=>{const c={...v};delete c.fotosData;delete c.firma;return c;});localStorage.setItem('samoa_lub_visits',JSON.stringify(slim));}
+  sendToSheets(visit);setTimeout(()=>enviarCorreoAuto(visit),800);
+  showToast('✅ Visita guardada correctamente');setTimeout(()=>{if(confirm('¿Empezar una nueva visita?'))resetVisita();},1200);
+}
+
+function sendToSheets(visit){const url=localStorage.getItem('samoa_lub_sheets_url');if(!url)return;const pct=visit.totalItems-visit.naItems>0?Math.round((visit.verificados/(visit.totalItems-visit.naItems))*100):0;fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({fecha:visit.fecha,tecnico:visit.tecnico,modo:visit.modo,cliente:visit.cliente,orden:visit.orden,nserie:visit.nserie,verificados:`${visit.verificados}/${visit.totalItems-visit.naItems} (${pct}%)`,pendientes:visit.pendientes.length,nexu:`${visit.nexuVerificados}/${visit.nexuTotal}`,aceite:visit.fluidos.aceiteNiv,grasa:visit.fluidos.grasaNiv,notas:visit.notas,nombreCliente:visit.nombreCliente})}).then(()=>showToast('☁️ Sincronizado con Google Sheets')).catch(()=>{});}
+
+function enviarCorreoAuto(visit){const pct=visit.totalItems-visit.naItems>0?Math.round((visit.verificados/(visit.totalItems-visit.naItems))*100):0;const mL={pm:'Puesta en Marcha',prev:'Mantenimiento Preventivo',cor:'Mantenimiento Correctivo'};const pendStr=visit.pendientes.length?visit.pendientes.join('\n'):'✓ Todos los ítems verificados';emailjs.send('service_2bx8wcd','template_2nie2sd',{fecha:visit.fecha,tecnico:visit.tecnico,modo:mL[visit.modo]||visit.modo,cliente:visit.cliente,orden:visit.orden,nserie:visit.nserie,modelo:visit.modelo,verificados:`${visit.verificados}/${visit.totalItems-visit.naItems} (${pct}%)`,pendientes:pendStr,nexu:`${visit.nexuVerificados}/${visit.nexuTotal} verificados`,aceite:visit.fluidos.aceiteNiv+' '+visit.fluidos.aceiteTipo,grasa:visit.fluidos.grasaNiv,refrigerante:visit.fluidos.refNiv,notas:visit.notas||'Sin notas',nombre_cliente:visit.nombreCliente||'—',firma:visit.firma||'',name:visit.tecnico,email:'asistenciagerencia@thpgroupinternational.com'}).then(()=>showToast('📧 Correo enviado a asistencia')).catch(err=>console.error('EmailJS:',err));}
+
+function imprimirReporte(){
+  const v=id=>document.getElementById(id).value||'—';
+  const mL={pm:'Puesta en Marcha',prev:'Mantenimiento Preventivo',cor:'Mantenimiento Correctivo'};
+  let pendHtml='';SECTIONS.forEach((sec,si)=>sec.items.forEach((item,ii)=>{if(checkState[`${si}_${ii}`]==='pending')pendHtml+=`<li>[${item.c}] ${item.t}</li>`;}));
+  const printContent=`<div style="font-family:Arial,sans-serif;font-size:12px;color:#1a2540;padding:20px;max-width:800px;margin:0 auto"><div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;border-bottom:3px solid #1a56a0;padding-bottom:12px"><div style="background:#1a56a0;color:white;font-weight:900;font-size:18px;padding:8px 14px;border-radius:6px">SAMOA</div><div><div style="font-size:18px;color:#1a56a0;font-weight:700">Reporte Visita Técnica · Lubricación</div><div style="font-size:11px;color:#8a9ab0">THP Group International · ${mL[currentMode]||''}</div></div><div style="margin-left:auto;text-align:right;font-size:11px;color:#8a9ab0"><div><strong>Fecha:</strong> ${v('f-fecha')}</div><div><strong>Técnico:</strong> ${currentTecnico}</div><div><strong>Orden:</strong> ${v('f-orden')}</div></div></div><div style="font-size:13px;color:#1a56a0;font-weight:700;margin:14px 0 6px;border-bottom:2px solid #1a56a0;padding-bottom:4px">Datos del Cliente</div><table style="width:100%;border-collapse:collapse;margin-bottom:12px"><tr><td style="padding:4px 8px;border-bottom:1px solid #f0f4fa;font-weight:600;color:#5a6a82;width:35%">Cliente</td><td style="padding:4px 8px;border-bottom:1px solid #f0f4fa">${v('f-cliente')}</td></tr><tr><td style="padding:4px 8px;border-bottom:1px solid #f0f4fa;font-weight:600;color:#5a6a82">Nº Serie</td><td style="padding:4px 8px;border-bottom:1px solid #f0f4fa">${v('f-nserie')}</td></tr><tr><td style="padding:4px 8px;border-bottom:1px solid #f0f4fa;font-weight:600;color:#5a6a82">Modelo</td><td style="padding:4px 8px;border-bottom:1px solid #f0f4fa">${v('f-modelo')}</td></tr></table><div style="font-size:13px;color:#1a56a0;font-weight:700;margin:14px 0 6px;border-bottom:2px solid #1a56a0;padding-bottom:4px">Estado — ${document.getElementById('b-ok').textContent}/${parseInt(document.getElementById('b-total').textContent)-parseInt(document.getElementById('b-na').textContent)} verificados</div>${pendHtml?`<ul style="margin:6px 0 0 16px;font-size:11px">${pendHtml}</ul>`:'<div style="color:#00A86B;font-weight:700">✓ Todos los ítems verificados</div>'}<div style="font-size:13px;color:#1a56a0;font-weight:700;margin:14px 0 6px;border-bottom:2px solid #1a56a0;padding-bottom:4px">NEXU — ${Object.values(nexuState).filter(v=>v==='done').length}/${NEXU_ITEMS.length} verificados</div><div style="font-size:13px;color:#1a56a0;font-weight:700;margin:14px 0 6px;border-bottom:2px solid #1a56a0;padding-bottom:4px">Firma</div><div style="padding:8px;border:1px solid #ddd;border-radius:6px"><div style="font-size:12px;margin-bottom:6px"><strong>Firmado por:</strong> ${v('f-nombre-cliente')}</div>${signatureData?`<img src="${signatureData}" style="max-height:80px;border:1px solid #ddd;border-radius:4px">`:'<em style="color:#8a9ab0">Sin firma</em>'}</div><div style="margin-top:20px;padding-top:10px;border-top:1px solid #ddd;font-size:10px;color:#8a9ab0;text-align:center">Reporte generado por App Técnicos SAMOA · THP Group International · asistenciagerencia@thpgroupinternational.com</div></div>`;
+  let pd=document.getElementById('print-area');if(pd)pd.remove();let ps=document.getElementById('print-style');if(ps)ps.remove();pd=document.createElement('div');pd.id='print-area';pd.innerHTML=printContent;pd.style.display='none';document.body.appendChild(pd);ps=document.createElement('style');ps.id='print-style';ps.innerHTML='@media print{body>*:not(#print-area){display:none!important;}#print-area{display:block!important;}}';document.head.appendChild(ps);window.print();setTimeout(()=>{document.getElementById('print-area')?.remove();document.getElementById('print-style')?.remove();},2000);
+}
+
+function resetVisita(){
+  SECTIONS.forEach((sec,si)=>sec.items.forEach((_,ii)=>{const k=`${si}_${ii}`;checkState[k]='pending';const card=document.getElementById('crd-'+si);if(card){const rows=card.querySelectorAll('.item');rows.forEach(row=>{row.classList.remove('checked','na-item');row.querySelector('.icb').innerHTML='';row.querySelector('.ina').textContent='N/A';});}}));
+  NEXU_ITEMS.forEach((_,i)=>{nexuState[i]='pending';});document.getElementById('nexu-list').innerHTML='';buildNexuList();
+  photos={problema:[],antes:[],despues:[],instalacion:[],fluidos:[],'nexu-foto':[]};['problema','antes','despues','instalacion','fluidos','nexu-foto'].forEach(c=>{const el=document.getElementById('grid-'+c);if(el)el.innerHTML='';});updatePhotoCount();clearSignature();
+  ['f-cliente','f-poblacion','f-domicilio','f-orden','f-nserie','f-modelo','f-nombre-cliente','f-email-cliente'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('f-fecha').value=new Date().toISOString().split('T')[0];
+  ['notas-cl','notas-fl','notas-nexu','obs-cliente'].forEach(id=>{document.getElementById(id).value='';});
+  updateStats();signatureData='';document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));document.getElementById('tp-checklist').classList.add('active');document.querySelectorAll('.tab')[0].classList.add('active');window.scrollTo(0,0);
+}
+
+function renderHistory(){
+  visits=JSON.parse(localStorage.getItem('samoa_lub_visits')||'[]');
+  const list=document.getElementById('history-list');const q=(document.getElementById('search-input').value||'').toLowerCase();
+  const mL={pm:'Puesta en Marcha',prev:'Preventivo',cor:'Correctivo'};
+  const filtered=visits.filter(v=>[v.cliente,v.tecnico,v.orden,v.nserie,v.fecha,v.modo].join(' ').toLowerCase().includes(q));
+  document.getElementById('hist-subtitle').textContent=`${filtered.length} visitas registradas`;
+  if(!filtered.length){list.innerHTML=`<div class="empty-state"><div style="font-size:48px;margin-bottom:12px">${q?'🔍':'📋'}</div><h3 style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;margin-bottom:6px">${q?'Sin resultados':'Sin visitas aún'}</h3></div>`;return;}
+  list.innerHTML=filtered.map((v)=>{
+    const pct=v.totalItems-v.naItems>0?Math.round((v.verificados/(v.totalItems-v.naItems))*100):0;
+    const totalFotos=v.fotosCounts?Object.values(v.fotosCounts).reduce((a,b)=>a+b,0):0;
+    return `<div class="report-card" onclick="openVisit(${visits.indexOf(v)})"><div class="rc-top"><div class="rc-badge ${v.modo||'pm'}">${v.modo==='pm'?'PM':v.modo==='prev'?'PRE':'COR'}</div><div class="rc-info"><h3>${v.cliente||'Sin cliente'} · ${v.orden||v.nserie||'—'}</h3><p>${v.fecha||'—'} · ${v.tecnico||'—'} · ${mL[v.modo]||'—'}</p></div></div><div class="rc-pills"><span class="pill ${pct===100?'green':pct>50?'blue':'orange'}">${pct}% verificado</span>${totalFotos?`<span class="pill blue">📸 ${totalFotos}</span>`:''}${v.firma?'<span class="pill green">✍️</span>':''}</div></div>`;
+  }).join('');
+}
+
+function openVisit(idx){const v=visits[idx];if(!v)return;const pct=v.totalItems-v.naItems>0?Math.round((v.verificados/(v.totalItems-v.naItems))*100):0;document.getElementById('modal-title').textContent=(v.cliente||'Sin cliente')+' · '+(v.orden||v.nserie||'—');document.getElementById('modal-sub').textContent=v.fecha+' · '+v.tecnico;let html=`<div class="msec"><h3>Checklist</h3><div class="mrow"><span>Verificados</span><span>${v.verificados}/${v.totalItems-v.naItems} (${pct}%)</span></div><div class="mrow"><span>Pendientes</span><span>${v.pendientes?.length||0} ítems</span></div><div class="mrow"><span>NEXU</span><span>${v.nexuVerificados||0}/${v.nexuTotal||0}</span></div></div>`;if(v.fluidos)html+=`<div class="msec"><h3>Fluidos</h3><div class="mrow"><span>Aceite</span><span>${v.fluidos.aceiteNiv||'—'}</span></div><div class="mrow"><span>Grasa</span><span>${v.fluidos.grasaNiv||'—'}</span></div><div class="mrow"><span>Refrigerante</span><span>${v.fluidos.refNiv||'—'}</span></div></div>`;if(v.firma)html+=`<div class="msec"><h3>Firma</h3><div class="mrow"><span>Firmado por</span><span>${v.nombreCliente||'—'}</span></div><img src="${v.firma}" style="max-height:80px;border-radius:6px;border:1px solid #ddd;margin-top:8px;"></div>`;document.getElementById('modal-body').innerHTML=html;document.getElementById('modal-overlay').classList.add('open');}
+function closeModal(e){if(!e||e.target===document.getElementById('modal-overlay'))document.getElementById('modal-overlay').classList.remove('open');}
+
+let tt;function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800);}
+</script>
+</body>
+</html>
